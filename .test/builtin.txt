@@ -1,0 +1,2 @@
+bg_job_count=0
+count=0

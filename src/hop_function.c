@@ -100,7 +100,7 @@ void hop_function(char* user_input,char*home_dir,char *prev_path,
 			char *token = strtok(pointer_space, " ");  
 			int length=strlen(token);
 			if (chdir(token)==-1){
-			    printf("No such directory!\n");
+			    printf("Command not found!\n");
 				*failed=1;
 			    return ;
 			}

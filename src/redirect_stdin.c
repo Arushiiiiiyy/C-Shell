@@ -88,7 +88,7 @@ void redirect_stdin(char **token, int pipe_no, char *user_input,
                     var1_in = open(tok, O_RDONLY);
                     if (var1_in < 0)
                     {
-                        printf("Sorry,no such file or directory\n");
+                        printf("No such file or directory\n");
                         exit(1);
                     }
                     dup2(var1_in, STDIN_FILENO);

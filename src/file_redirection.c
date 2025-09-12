@@ -10,7 +10,8 @@ void file_redirection(char** first_arg,int total){
         }
         argv[total+1]=NULL;
         execvp(argv[0],argv);
-        perror("Execvp failed , sorry\n");
+        printf("Command not found!\n");
+        //perror("Execvp failed , sorry\n");
     }
     else if(rc>0){
         wait(NULL);

@@ -78,7 +78,7 @@ void reveal_func(char* user_input,char* home_dir,
 		//printf("current directory me hai\n");
 		DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent* entry;
@@ -107,7 +107,7 @@ void reveal_func(char* user_input,char* home_dir,
 	if(al_start==NULL || *al_start=='\n' || *al_start=='\0'){
 		DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			index=0;
@@ -206,7 +206,7 @@ void reveal_func(char* user_input,char* home_dir,
 	    i++;
 	}
 	//printf("%d=invalide,%d=vuc\n",invalid,v_u_c);
-	if(invalid>1 || v_u_c>1){
+	if(invalid>1 /*|| v_u_c>1*/){
 		printf("reveal: Invalid Syntax!\n");
 		return ;
 	}
@@ -246,7 +246,7 @@ void reveal_func(char* user_input,char* home_dir,
 		if(a_num>0 && l_num==0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent * entry;
@@ -262,7 +262,7 @@ void reveal_func(char* user_input,char* home_dir,
 		else if(a_num==0 && l_num>0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent* entry;
@@ -278,7 +278,7 @@ void reveal_func(char* user_input,char* home_dir,
 		else if(a_num>0 && l_num>0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent * entry;
@@ -295,7 +295,7 @@ void reveal_func(char* user_input,char* home_dir,
 			//}
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent* entry;
@@ -328,7 +328,7 @@ void reveal_func(char* user_input,char* home_dir,
 		if(a_num>0 && l_num==0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent * entry;
@@ -344,7 +344,7 @@ void reveal_func(char* user_input,char* home_dir,
 		else if(a_num==0 && l_num>0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent* entry;
@@ -360,7 +360,7 @@ void reveal_func(char* user_input,char* home_dir,
 		else if(a_num>0 && l_num>0){
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent * entry;
@@ -374,7 +374,7 @@ void reveal_func(char* user_input,char* home_dir,
 		else {
 			DIR* dir=opendir(".");
 			if(!dir){
-			   printf("No such directory!\n");
+			   printf("Command not found!\n");
 			   return ;
 			}
 			struct dirent* entry;

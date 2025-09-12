@@ -87,9 +87,9 @@ void hop_function(char* user_input,char*home_dir,char *prev_path,
 			}
 			pointer_space++;
 		}
-		else if(strncmp("/",pointer_space,1)==0){
-			pointer_space++;
-		}
+		//else if(strncmp("/",pointer_space,1)==0){
+		//	pointer_space++;
+		//}
 		else{
 			(*hopper)++;
 			//you may get relative or exact file location

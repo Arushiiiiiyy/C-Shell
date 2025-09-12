@@ -164,11 +164,11 @@ int main()
 	char home_path_always[4097] = {0};
 	getcwd(home_path_always, sizeof(home_path_always));
 	// LLM Generated code
-	int len = strlen(path_init);
-	if (len > 1 && path_init[len - 1] == '/')
-	{
-		path_init[len - 1] = '\0';
-	}
+	//int len = strlen(path_init);
+	//if (len > 1 && path_init[len - 1] == '/')
+	//{
+	//	path_init[len - 1] = '\0';
+	//}
 	char home_dir[5000];
 	char *slash_last = strrchr(path_init, '/');
 	if (slash_last != NULL && *(slash_last + 1) != '\0')
@@ -201,11 +201,11 @@ int main()
 		// init_prompt_display();
 		// the below code checks if the process is foreground or not
 		getcwd(path_init, sizeof(path_init));
-		int lent = strlen(path_init);
-		if (lent > 1 && path_init[lent - 1] == '/')
-		{
-			path_init[lent - 1] = '\0';
-		}
+		//int lent = strlen(path_init);
+		//if (lent > 1 && path_init[lent - 1] == '/')
+		//{
+		//	path_init[lent - 1] = '\0';
+		//}
 		int flag_ch = 0;
 
 		if (flag_ch == 1)
@@ -347,7 +347,15 @@ int main()
 					{
 						log_add(amp_part, always, &checker);
 					}
-					if (strncmp(amp_part, "hop", 3) == 0)
+					/*(if(strncmp(amp_part, "cd", 2) == 0){
+						hop_function(amp_part, home_dir, prev_path, &hopper,
+									 &failed, &reveal_func_ret, home_path_always, &checker);
+						// log_add(amp_part);
+						amp_part = strtok_r(NULL, "&", &amp_rest);
+						// log_add(amp_part);
+						continue;
+					}*/
+					if (strncmp(amp_part, "hop", 3) == 0 || strncmp(amp_part, "cd", 2) == 0)
 					{
 						hop_function(amp_part, home_dir, prev_path, &hopper,
 									 &failed, &reveal_func_ret, home_path_always, &checker);

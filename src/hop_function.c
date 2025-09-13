@@ -44,7 +44,7 @@ void hop_function(char* user_input,char*home_dir,char *prev_path,
 			}	
 			pointer_space=pointer_space+2;
 		}
-		else if(strncmp(".",pointer_space,1)==0){
+		else if(strncmp(".",pointer_space,1)==0 && pointer_space+1!=NULL && strncmp(" ",pointer_space+1,1)==0){
 				pointer_space++;
 				//return;//do nothing
 		}
@@ -96,11 +96,12 @@ void hop_function(char* user_input,char*home_dir,char *prev_path,
 			//int rel_const=check_path(pointer_space);
 			//printf("c'man\n");
 			char path_initi[4097]={0};
+			//printf("%s=path inti\n",path_initi);
 			getcwd(path_initi,sizeof(path_initi));//intial path
 			char *token = strtok(pointer_space, " ");  
 			int length=strlen(token);
 			if (chdir(token)==-1){
-			    printf("Command not found!\n");
+			    printf("No such directory!\n");
 				*failed=1;
 			    return ;
 			}

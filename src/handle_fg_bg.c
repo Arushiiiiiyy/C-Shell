@@ -1,5 +1,5 @@
 #include "../include/headers.h"
-
+//LLM Generated Code
 extern bg_job bg_jobs[100];
 extern int bg_job_count;
 extern pid_t fg_pgid;
@@ -35,7 +35,7 @@ void fg_command(int job_number) {
 
     // Resume job
     if (kill(job->pid, SIGCONT) < 0) {
-        perror("kill(SIGCONT) failed");
+        printf("No such job\n");
         return;
     }
 
@@ -94,7 +94,7 @@ void bg_command(int job_number) {
     }
 
     if (kill(job->pid, SIGCONT) < 0) {
-        perror("kill(SIGCONT) failed");
+        printf("No such job\n");
         return;
     }
 
@@ -116,3 +116,4 @@ void handle_fg_bg(char **argv, int argc) {
             bg_command(atoi(argv[1]));
     }
 }
+//LLM Generated Code

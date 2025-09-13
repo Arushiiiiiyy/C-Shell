@@ -1,37 +1,46 @@
 #include "../include/headers.h"
 // the above line includes all the headers
-
+//LINE 20 -LINE 20 !
 // universal variables hehe
-
+//extern volatile int fg_pgid = -1;        // -1 means "no foreground job"
+volatile sig_atomic_t sigtstp_received = 0;
 void check_bg()
 {
+	//printf("bg_job_counter=%d\n",bg_job_count);
 	for (int i = 0; i < bg_job_count; i++)
 	{
 		if (bg_jobs[i].active)
 		{
 			int status;
 			pid_t ret = waitpid(bg_jobs[i].pid, &status, WNOHANG);
+			//printf("ret=%d\n",ret);
 			if (ret > 0)
 			{
 				if (WIFEXITED(status) || WIFSIGNALED(status))
 				{
-					printf("%s with pid %d exited normally\n", bg_jobs[i].cmd, bg_jobs[i].pid);
+					//printf("%s with pid %d exited normally\n", bg_jobs[i].cmd, bg_jobs[i].pid);
 					bg_jobs[i].active = 0;
 					fflush(stdout);
 				}
-				else if (WIFSTOPPED(status))
-				{
-					// strcpy(list[count].state, "Stopped");
-					printf("%s with pid %d exited abnormally\n", bg_jobs[i].cmd, bg_jobs[i].pid);
-					fflush(stdout);
-				}
-				bg_jobs[i].active = 0;
+				//this was initially commented
+				 else if (WIFSTOPPED(status))
+				 {
+				 	// strcpy(list[count].state, "Stopped");
+				 	printf("%s with pid %d exited abnormally\n", bg_jobs[i].cmd, bg_jobs[i].pid);
+				 	fflush(stdout);
+				 }
+				 //printf("problem idhar hai\n");
+				 bg_jobs[i].active = 0;
+				//this was intitially commented
 			}
 			else if (ret == -1)
 			{
 				if (errno == ECHILD)
 				{
-					bg_jobs[i].active = 0;
+					if (kill(bg_jobs[i].pid, 0) == -1 && errno == ESRCH) {
+            		// truly gone → safe to mark inactive
+            			bg_jobs[i].active = 0;
+        			}
 				}
 			}
 		}
@@ -51,7 +60,7 @@ void activities()
 
 	activity_entry list[MAX_BG_JOBS];
 	int count = 0;
-	printf("bg_job_count=%d\n", bg_job_count);
+	//printf("bg_job_count=%d\n", bg_job_count);
 	for (int i = 0; i < bg_job_count; i++)
 	{
 		if (bg_jobs[i].active)
@@ -88,7 +97,7 @@ void activities()
 	}
 
 	// Sort lexicographically by command name
-	printf("count=%d\n", count);
+	//printf("count=%d\n", count);
 	for (int i = 0; i < count - 1; i++)
 	{
 		for (int j = i + 1; j < count; j++)
@@ -102,10 +111,14 @@ void activities()
 		}
 	}
 
-	// Print
+	//printf("count=%d\n",count);
 	for (int i = 0; i < count; i++)
 	{
-		printf("[%d] : %s - %s\n", list[i].pid, list[i].cmd, list[i].state);
+		char *str=(char*)malloc(sizeof(char)*4097);
+		strcpy(str,list[i].cmd);
+		char* tok=strtok(str," ");
+		printf("[%d] : %s - %s\n", list[i].pid, tok , list[i].state);
+		//I did not added 1 intentionally 
 	}
 	fflush(stdout);
 	exit(0);
@@ -124,7 +137,7 @@ void ping(int pid, int signal_number)
 	}
 }
 
-void sigint_handler()
+void sigint_handler(int sig)
 {
 	if (fg_pgid > 0)
 	{
@@ -135,21 +148,38 @@ void sigint_handler()
 // LOOK HERE LOOK HERE
 void sigtstp_handler(int sig)
 {
-	if (fg_pgid > 0)
-	{ // take that particular process ID
-		kill(-fg_pgid, SIGTSTP);
-		jobs[job_count].job_id = job_count + 1;
-		jobs[job_count].pgid = fg_pgid;
-		strcpy(jobs[job_count].command, "fill smthing here\n");
-		jobs[job_count].running = 0;
-		job_count++;
-		printf("\n[%d] Stopped %s\n", job_count, jobs[job_count - 1].command);
-		fflush(stdout);
-	}
+	 if (fg_pgid > 0)
+	 { // take that particular process ID
+	 	kill(-fg_pgid, SIGTSTP);
+	 	jobs[job_count].job_id = job_count + 1;
+	 	jobs[job_count].pgid = fg_pgid;
+	 	strcpy(jobs[job_count].command, "fill smthing here\n");
+	 	jobs[job_count].running = 0;
+	 	job_count++;
+	 	printf("\n[%d] Stopped %s\n", job_count, jobs[job_count - 1].command);
+	 	fflush(stdout);
+	 }
 }
 
 void install_signal_handlers()
 {
+	struct sigaction sa_int = {0};
+    sa_int.sa_handler = sigint_handler;
+    sigemptyset(&sa_int.sa_mask);
+    sa_int.sa_flags = 0;
+	if (sigaction(SIGINT, &sa_int, NULL) < 0) {
+        perror("sigaction SIGINT");
+        // continue but note it
+    }
+	struct sigaction sa_tstp = {0};
+    sa_tstp.sa_handler = sigtstp_handler;
+    sigemptyset(&sa_tstp.sa_mask);
+    sa_tstp.sa_flags = 0;
+
+    if (sigaction(SIGTSTP, &sa_tstp, NULL) < 0) {
+        perror("sigaction SIGTSTP");
+    }
+
 	signal(SIGINT, sigint_handler);
 	signal(SIGTSTP, sigtstp_handler);
 }
@@ -193,6 +223,9 @@ int main()
 	install_signal_handlers();
 	signal(SIGTTOU, SIG_IGN); // ignore background terminal output stops
 	signal(SIGTTIN, SIG_IGN);
+	struct sigaction sa = {0};
+    sa.sa_handler = sigint_handler;
+    sigaction(SIGINT, &sa, NULL);
 	while (1)
 	{
 
@@ -282,7 +315,7 @@ int main()
 		{
 			handle_fg_bg(argv, argc);
 			// After fg/bg, check if any background processes finished
-			check_bg();
+			//check_bg();
 			continue;
 		}
 		strcpy(input_copy, user_input);
@@ -314,7 +347,7 @@ int main()
 				semi_token[semi_tot++] = token;
 				token = strtok(NULL, ";");
 			} // broken into tokens
-
+			//printf("%s=token[0] and %s=token[1]\n",semi_token[0],semi_token[1]);
 			for (int i = 0; i < semi_tot; i++)
 			{ // check it out
 				// char* and_split[4097];//it is gonna split by &
@@ -398,10 +431,14 @@ int main()
 						if (is_background)
 						{
 							static int job_number = 1;
+							
 							printf("[%d] %d\n", job_number, rc);
 							bg_jobs[bg_job_count].job_number = job_number;
+							
 							bg_jobs[bg_job_count].pid = rc;
+							
 							bg_jobs[bg_job_count].pgid = rc;
+							
 							strcpy(bg_jobs[bg_job_count].cmd, amp_part);
 							bg_jobs[bg_job_count].active = 1;
 							bg_job_count++;

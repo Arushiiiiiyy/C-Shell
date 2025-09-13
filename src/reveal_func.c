@@ -144,12 +144,14 @@ void reveal_func(char* user_input,char* home_dir,
 	int l_num=0;
 	//int min_sig=0;
 	//int iter=0;
+	int minus=0;
 	int hop_func=0;
 	int v_u_c=0;
 	//checking the first token if it is al or path :0
 	while(*tok_copy!='\0'){
 		if(*tok_copy=='-'){
 			tok_copy++;
+			minus++;
 			continue;
 		}
 		if(*tok_copy=='a'){
@@ -369,6 +371,24 @@ void reveal_func(char* user_input,char* home_dir,
 				lexic_sort[index++]=strdup(entry->d_name);
 				//printf("%s\n",entry->d_name);
 			}
+			closedir(dir);
+		}
+		else if(a_num==0 && l_num==0 && minus==1){
+			char* v=(char*)malloc(sizeof(char)*1000);
+			strcpy(v,"hop -");
+			hop_function(v,home_dir,prev_path,
+				  hopper,failed,reveal_func_ret,
+				   home_path_always,checker);
+			struct dirent * entry;
+			index=0;
+			DIR* dir=opendir(".");
+			while((entry=readdir(dir))!=NULL){
+				lexic_sort[index++]=strdup(entry->d_name);
+				//printf("%s\n",entry->d_name);
+			}
+			hop_function(v,home_dir,prev_path,
+				  hopper,failed,reveal_func_ret,
+				   home_path_always,checker);
 			closedir(dir);
 		}
 		else {

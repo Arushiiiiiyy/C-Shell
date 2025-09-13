@@ -32,11 +32,15 @@ void prompt_username(char* str_final){
         strcat(str_final,"@");
         strcat(str_final,host_final);
         strcat(str_final,":");
+        char final_current[PATH_MAX];
+        
+        unsigned long a=strlen(psuedo_home);
+        unsigned long iy=a;
         if(getcwd(current_working,sizeof(current_working))!=NULL){
 
-            char final_current[PATH_MAX];
             
-            unsigned long a=strlen(psuedo_home);
+            
+            //unsigned long a=strlen(psuedo_home);
 
             if(a>strlen(current_working)){
 
@@ -46,11 +50,11 @@ void prompt_username(char* str_final){
 
             }
 
-            unsigned long i=a;
-            for(i=a;i<strlen(current_working);i++){
-                final_current[i-a]=current_working[i];
+            
+            for(iy=a;iy<strlen(current_working);iy++){
+                final_current[iy-a]=current_working[iy];
             }
-            final_current[i-a]='\0';
+            final_current[iy-a]='\0';
             if(final_current[0]=='\0'){  
                 strcat(str_final,"~>");
             }else{
@@ -59,7 +63,20 @@ void prompt_username(char* str_final){
             }
 
         }else{
-            perror("Error getting current directory\n");
+            //unsigned long i=a;
+            for(iy=a;iy<strlen(current_working);iy++){
+                final_current[iy-a]=current_working[iy];
+            }
+            final_current[iy-a]='\0';
+            if(final_current[0]=='\0'){  
+                strcat(str_final,"~>");
+            }else{
+                strcat(str_final,final_current);
+                strcat(str_final,">");
+            }
+            //*g=1;
+            printf("No such file or directory!\n");
+            exit(0);
         }
 
     }else{

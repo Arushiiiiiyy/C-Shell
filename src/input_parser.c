@@ -1,3 +1,5 @@
+//LLM GENERATED CODE 
+
 #include "../include/headers.h"
 #define MAX_TOKENS 4096
 #define MAX_LEN 1024
@@ -85,24 +87,60 @@ bool parse_shell_cmd(char **tokens, int ntokens) {
 // ---------- tokenizer + parser wrapper ----------
 
 bool input_parser(char *input, int input_length) {
-    char *tok = strtok(input, " \t\n");
     token_store_index = 0;
 
-    while (tok != NULL && token_store_index < MAX_TOKENS) {
-        token_store[token_store_index++] = tok;
-        tok = strtok(NULL, " \t\n");
+    char buf[MAX_LEN];
+    int b = 0;
+    for (int i = 0; i < input_length; i++) {
+        char c = input[i];
+
+        // whitespace => flush current token
+        if (isspace((unsigned char)c)) {
+            if (b > 0) {
+                buf[b] = '\0';
+                token_store[token_store_index++] = strdup(buf);
+                b = 0;
+            }
+            continue;
+        }
+
+        // single-char punctuation => flush + add as own token
+        if (c=='|' || c=='&' || c==';' || c=='<' || c=='>') {
+            if (b > 0) {
+                buf[b] = '\0';
+                token_store[token_store_index++] = strdup(buf);
+                b = 0;
+            }
+
+            // handle >> specially
+            if (c=='>' && i+1 < input_length && input[i+1]=='>') {
+                token_store[token_store_index++] = strdup(">>");
+                i++; // skip next
+            } else {
+                char t[2] = {c,'\0'};
+                token_store[token_store_index++] = strdup(t);
+            }
+            continue;
+        }
+
+        // normal character
+        buf[b++] = c;
     }
 
-    if (token_store_index == 0) return false;  // empty input treated as invalid
+    if (b > 0) {
+        buf[b] = '\0';
+        token_store[token_store_index++] = strdup(buf);
+    }
+
+    if (token_store_index == 0) return false;
 
     if (parse_shell_cmd(token_store, token_store_index)) {
-        // valid syntax: do nothing, just return true
         return true;
     } else {
-        // invalid syntax: print error
         printf("Invalid Syntax!\n");
         fflush(stdout);
         return false;
     }
 }
 
+//LLM GENERATED CODE ENDED

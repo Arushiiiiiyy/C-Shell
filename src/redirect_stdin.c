@@ -88,7 +88,7 @@ void redirect_stdin(char **token, int pipe_no, char *user_input,
                     var1_in = open(tok, O_RDONLY);
                     if (var1_in < 0)
                     {
-                        printf("No such file or directory\n");
+                        printf("No such file or directory!\n");
                         exit(1);
                     }
                     dup2(var1_in, STDIN_FILENO);
@@ -103,7 +103,7 @@ void redirect_stdin(char **token, int pipe_no, char *user_input,
                     // this will also wipe the file
                     if (var2_out < 0)
                     {
-                        perror("Can't open file\n");
+                        printf("No such file or directory!\n");
                     }
                     dup2(var2_out, STDOUT_FILENO);
                     close(var2_out);
@@ -115,7 +115,7 @@ void redirect_stdin(char **token, int pipe_no, char *user_input,
                     var2_out = open(tok, O_WRONLY | O_CREAT | O_APPEND, 0644);
                     if (var2_out < 0)
                     {
-                        perror("Can't open file,sorry\n");
+                        printf("No such file or directory!\n");
                     }
                     dup2(var2_out, STDOUT_FILENO);
                     close(var2_out);
@@ -215,7 +215,7 @@ void redirect_stdin(char **token, int pipe_no, char *user_input,
             {
                 argv[idx] = NULL;
                 execvp(argv[0], argv);
-                perror("Execvp failed, sorry");
+                printf("Command not found!\n");
                 exit(1);
             }
             // perror("Execvp failed, sorry");

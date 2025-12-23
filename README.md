@@ -18,9 +18,9 @@ A simple C-shell implementation with different function calls
 9) activities - lists all processes spawned by the shell which are still running or are stopped
 
 GRAMMAR USED FOR THE PARSER ->
-	shell_cmd  ->  cmd_group ((& | ;) cmd_group)* &?
-	cmd_group ->  atomic (\| atomic)*
-	atomic -> name (name | input | output)*
-	input -> < name | <name
-	output -> > name | >name | >> name | >>name
-	name -> r"[^|&><;\s]+"
+	shell_cmd  ->  cmd_group ((& | ;) cmd_group)* &? <br>
+	cmd_group ->  atomic (\| atomic)*<br>
+	atomic -> name (name | input | output)* <br>
+	input -> < name | <name <br>
+	output -> > name | >name | >> name | >>name <br>
+	name -> r"[^|&><;\s]+" 
